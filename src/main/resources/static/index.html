@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Distance Calculator</title>
+</head>
+<body>
+  <h1>Distance Calculator</h1>
+  <label for="origin">Origin:</label>
+  <input type="text" id="origin" placeholder="Enter origin address" size="50"><br><br>
+  <label for="destination">Destination:</label>
+  <input type="text" id="destination" placeholder="Enter destination address" size="50"><br><br>
+  <button id="calculateBtn">Calculate Distance</button>
+  <h2>Results</h2>
+  <pre id="results"></pre>
+  <script>
+    document.getElementById('calculateBtn').addEventListener('click', function() {
+      const origin = document.getElementById('origin').value;
+      const destination = document.getElementById('destination').value;
+      if (!origin || !destination) {
+        alert('Please enter both origin and destination addresses.');
+        return;
+      }
+      fetch('/api/distance', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({origin, destination})
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Network response was not ok: ' + res.statusText);
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById('results').textContent = JSON.stringify(data, null, 2);
+      })
+      .catch(err => {
+        document.getElementById('results').textContent = 'Error: ' + err;
+      });
+    });
+  </script>
+</body>
+</html>
+
